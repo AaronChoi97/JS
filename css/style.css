@@ -1,0 +1,5 @@
+.catalogo{
+    display: grid;
+    grid-template-columns: auto auto;
+    justify-content: space-around;
+}
