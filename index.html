@@ -18,29 +18,19 @@
             <div>
                 <h2>Nuestros Productos</h2>
 
-            <div id="productos">
-
-                <!-- <img src="" alt="img-vino">
-                <img src="" alt="img-cerveza"> -->
-                
-            </div>
+                <div id="productos"></div>
             </div>
 
-            <div id="carrito">
+            <aside>
 
                 <h2>Carrito</h2>
-    
-                <form name="carrito-adder">
-                    <input type="text" id="producto-entry-box" />
-                </form>
-    
-                <button id="add-button" class="pretty-button">Agregar</button>
-    
-                <button id="empty-button" class="pretty-button">Vaciar Lista</button>
-    
-                <ol id="carrito-compra"></ol>
-    
-            </div>
+                
+                <ul id="carrito"></ul>
+                
+                <p>Total:  $ <span id="total"></span></p>
+
+                <button id="boton-vaciar">Vaciar</button>
+            </aside>
 
         </div>
 
@@ -52,7 +42,7 @@
 
 
 
-        <script src="./js/script.js"></script>
-        <script src="./js/carrito.js"></script>
+        <script src="./js/stock.js"></script>
+        <script src="./js/carrito.js"></script> 
     </body>
 </html>

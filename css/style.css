@@ -1,5 +1,18 @@
+h1 {
+    display: flex;
+    background-color: beige;
+
+}
+
 .catalogo{
     display: grid;
     grid-template-columns: auto auto;
     justify-content: space-around;
+    background-color: beige;
+}
+
+img {
+    width: 25%;
+    margin: 10px;
+    border: solid black .1rem;
 }

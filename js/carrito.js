@@ -1,34 +1,91 @@
-let addButton = document.getElementById ('add-button')
+const contenedorProductos = document.getElementById('productos')
 
-addButton.addEventListener('click', addCarrito)
+const contenedorCarrito = document.getElementById('carrito')
 
-function addCarrito(){
+const botonVaciar = document.getElementById('boton-vaciar')
 
-    let itemText = productoEntryBox.value
-    newProductoAdd(itemText)    
+const precioTotal = document.getElementById('total')
+
+let carrito = []
+
+document.addEventListener('DOMContentLoaded', () => {
+    if (localStorage.getItem('carrito')){
+        carrito = JSON.parse(localStorage.getItem('carrito'))
+        actualizarCarrito()
+    }
+})
+
+stockProductos.forEach((producto) => {
+    const div = document.createElement('div')
+    div.classList.add('producto')
+    div.innerHTML = `
+    <img src=${producto.img} alt= "">
+    <h3>${producto.nombre}</h3>
+    <p class="precioProducto">Precio:  $ ${producto.precio}</p>
+    <p>Stock: ${producto.stock}</p>
+    <button id="agregar${producto.id}" class="boton-agregar">Agregar</button>`
+
+    contenedorProductos.appendChild(div)
+
+    const boton = document.getElementById(`agregar${producto.id}`) /*Averigua este simbolo ` */ 
+
+    boton.addEventListener('click', () => {
+        agregarAlCarrito(producto.id)
+    })
+});
+
+const agregarAlCarrito = (prodId) => {
+
+    const existe = carrito.some (prod => prod.id === prodId)
+
+    if (existe){
+        const prod = carrito.map (prod => {
+            if (prod.id === prodId){
+                prod.cantidad++
+            }
+        })
+    }else{
+
+    const item = stockProductos.find((prod) => 
+        prod.id === prodId)
+    carrito.push(item)}
+
+    actualizarCarrito()
 }
 
-let productoEntryBox = document.getElementById ('producto-entry-box')
+const actualizarCarrito = () => {
 
-let carritoCompra = document.getElementById ('carrito-compra')
+    contenedorCarrito.innerHTML = ""
 
-function newProductoAdd(text){
 
-    let ProductoAdd = document.createElement ('ul')
-    ProductoAdd.innerText = text
+    carrito.forEach((prod) => {
+        const div = document.createElement ('div')
+        div.className = ('productoEnCarrito')
+        div.innerHTML =  `
+        <p>${prod.nombre}</p>
+        <p>Precio:  $ ${prod.precio}</p>
+        <p>Cantidad: <span id="cantidad">${prod.cantidad}</span></p>
+        <button onclick="eliminarDelCarrito(${prod.id})" class="boton-eliminar">-</button>
+        `
+        contenedorCarrito.appendChild(div)
 
-    carritoCompra.append(ProductoAdd)
+        localStorage.setItem('carrito', JSON.stringify(carrito))
+    })
+    precioTotal.innerText = carrito.reduce ((acc, prod) => acc + prod.precio, 0)
 }
 
+const eliminarDelCarrito = (prodId) => {
 
+    const item = carrito.find((prod) => prod.id === prodId)
 
+    const indice = carrito.indexOf(item) 
 
-let emptyButton = document.getElementById("empty-button")
+    carrito.splice(indice, 1) 
 
-emptyButton.addEventListener("click", emptyList)
-
-function emptyList(){
-
-    carritoCompra.innerHTML=""
-    
+    actualizarCarrito() 
 }
+
+botonVaciar.addEventListener('click', () => {
+    carrito.length = 0
+    actualizarCarrito()
+})
