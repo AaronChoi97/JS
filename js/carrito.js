@@ -71,7 +71,7 @@ const actualizarCarrito = () => {
 
         localStorage.setItem('carrito', JSON.stringify(carrito))
     })
-    precioTotal.innerText = carrito.reduce ((acc, prod) => acc + prod.precio, 0)
+    precioTotal.innerText = carrito.reduce ((acc, prod) => acc + prod.precio * prod.cantidad, 0)
 }
 
 const eliminarDelCarrito = (prodId) => {
@@ -86,6 +86,22 @@ const eliminarDelCarrito = (prodId) => {
 }
 
 botonVaciar.addEventListener('click', () => {
-    carrito.length = 0
-    actualizarCarrito()
+    Swal.fire({
+        title: 'Estas seguro de vaciar el carrito?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Si, vaciar carrito!'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          Swal.fire(
+            'Carrito Vaciado!',
+            'Se vacio tu carrito.',
+            'success'
+          )
+            carrito.length = 0
+            actualizarCarrito()
+        }
+      })
 })
