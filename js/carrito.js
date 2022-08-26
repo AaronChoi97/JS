@@ -6,6 +6,8 @@ const botonVaciar = document.getElementById('boton-vaciar')
 
 const precioTotal = document.getElementById('total')
 
+let listaPosts = []
+
 let carrito = []
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -14,6 +16,27 @@ document.addEventListener('DOMContentLoaded', () => {
         actualizarCarrito()
     }
 })
+
+/*function render(lista){
+    for(const producto of lista){
+        const div = document.createElement('div')
+    div.classList.add('producto')
+    div.innerHTML = `
+    <img src=${producto.img} alt= "">
+    <h3>${producto.nombre}</h3>
+    <p class="precioProducto">Precio:  $ ${producto.precio}</p>
+    <p>Stock: ${producto.stock}</p>
+    <button id="agregar${producto.id}" class="boton-agregar">Agregar</button>`
+
+    contenedorProductos.appendChild(div)
+
+    const boton = document.getElementById(`agregar${producto.id}`) 
+
+    boton.addEventListener('click', () => {
+        agregarAlCarrito(producto.id)
+    })
+    }
+}
 
 stockProductos.forEach((producto) => {
     const div = document.createElement('div')
@@ -27,12 +50,12 @@ stockProductos.forEach((producto) => {
 
     contenedorProductos.appendChild(div)
 
-    const boton = document.getElementById(`agregar${producto.id}`) /*Averigua este simbolo ` */ 
+    const boton = document.getElementById(`agregar${producto.id}`) /*Averigua este simbolo ` * 
 
     boton.addEventListener('click', () => {
         agregarAlCarrito(producto.id)
     })
-});
+});*/
 
 const agregarAlCarrito = (prodId) => {
 
@@ -105,3 +128,29 @@ botonVaciar.addEventListener('click', () => {
         }
       })
 })
+
+fetch('data.json')
+    .then((response)=>response.json)
+    .catch((error)=>console.log(error))
+    .then((data)=>
+        {
+            data.forEach((producto) => {
+                const div = document.createElement('div')
+                div.classList.add('producto')
+                div.innerHTML = `
+                <img src=${producto.img} alt= "">
+                <h3>${producto.nombre}</h3>
+                <p class="precioProducto">Precio:  $ ${producto.precio}</p>
+                <p>Stock: ${producto.stock}</p>
+                <button id="agregar${producto.id}" class="boton-agregar">Agregar</button>`
+            
+                contenedorProductos.appendChild(div)
+            
+                const boton = document.getElementById(`agregar${producto.id}`) 
+            
+                boton.addEventListener('click', () => {
+                    agregarAlCarrito(producto.id)
+                })
+            })
+        }
+    )
