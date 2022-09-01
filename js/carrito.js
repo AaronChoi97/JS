@@ -6,8 +6,6 @@ const botonVaciar = document.getElementById('boton-vaciar')
 
 const precioTotal = document.getElementById('total')
 
-let listaPosts = []
-
 let carrito = []
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -17,45 +15,37 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 })
 
-/*function render(lista){
-    for(const producto of lista){
+async function listaDeProductos() {
+    const URLJSON = "data.json"
+    const resp = await fetch("data.json")
+    const data = await resp.json()
+    listaDeProductos = data;
+    renderizarProductos();
+} 
+
+listaDeProductos()
+
+function renderizarProductos() {
+    listaDeProductos.forEach((producto) => {
         const div = document.createElement('div')
-    div.classList.add('producto')
-    div.innerHTML = `
-    <img src=${producto.img} alt= "">
-    <h3>${producto.nombre}</h3>
-    <p class="precioProducto">Precio:  $ ${producto.precio}</p>
-    <p>Stock: ${producto.stock}</p>
-    <button id="agregar${producto.id}" class="boton-agregar">Agregar</button>`
+        div.classList.add('producto')
+        div.innerHTML = `
+        <img src=${producto.img} alt= "">
+        <h3>${producto.nombre}</h3>
+        <p class="precioProducto">Precio:  $ ${producto.precio}</p>
+        <p>Stock: ${producto.stock}</p>
+        <button id="agregar${producto.id}" class="boton-agregar">Agregar</button>`
+    
+        contenedorProductos.appendChild(div)
+    
+        const boton = document.getElementById(`agregar${producto.id}`) /*Averigua este simbolo ` */ 
+    
+        boton.addEventListener('click', () => {
+            agregarAlCarrito(producto.id)
+        })
+    });
+} 
 
-    contenedorProductos.appendChild(div)
-
-    const boton = document.getElementById(`agregar${producto.id}`) 
-
-    boton.addEventListener('click', () => {
-        agregarAlCarrito(producto.id)
-    })
-    }
-}
-
-stockProductos.forEach((producto) => {
-    const div = document.createElement('div')
-    div.classList.add('producto')
-    div.innerHTML = `
-    <img src=${producto.img} alt= "">
-    <h3>${producto.nombre}</h3>
-    <p class="precioProducto">Precio:  $ ${producto.precio}</p>
-    <p>Stock: ${producto.stock}</p>
-    <button id="agregar${producto.id}" class="boton-agregar">Agregar</button>`
-
-    contenedorProductos.appendChild(div)
-
-    const boton = document.getElementById(`agregar${producto.id}`) /*Averigua este simbolo ` * 
-
-    boton.addEventListener('click', () => {
-        agregarAlCarrito(producto.id)
-    })
-});*/
 
 const agregarAlCarrito = (prodId) => {
 
@@ -129,28 +119,4 @@ botonVaciar.addEventListener('click', () => {
       })
 })
 
-fetch('data.json')
-    .then((response)=>response.json)
-    .catch((error)=>console.log(error))
-    .then((data)=>
-        {
-            data.forEach((producto) => {
-                const div = document.createElement('div')
-                div.classList.add('producto')
-                div.innerHTML = `
-                <img src=${producto.img} alt= "">
-                <h3>${producto.nombre}</h3>
-                <p class="precioProducto">Precio:  $ ${producto.precio}</p>
-                <p>Stock: ${producto.stock}</p>
-                <button id="agregar${producto.id}" class="boton-agregar">Agregar</button>`
-            
-                contenedorProductos.appendChild(div)
-            
-                const boton = document.getElementById(`agregar${producto.id}`) 
-            
-                boton.addEventListener('click', () => {
-                    agregarAlCarrito(producto.id)
-                })
-            })
-        }
-    )
+     
