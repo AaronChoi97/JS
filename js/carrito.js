@@ -2,6 +2,8 @@ const contenedorProductos = document.getElementById('productos')
 
 const contenedorCarrito = document.getElementById('carrito')
 
+const botonPedir = document.getElementById("boton-comprar")
+
 const botonVaciar = document.getElementById('boton-vaciar')
 
 const precioTotal = document.getElementById('total')
@@ -16,37 +18,37 @@ document.addEventListener('DOMContentLoaded', () => {
 })
 
 async function listaDeProductos() {
-    const URLJSON = "data.json"
+    const URLJSON = "/data.json"
     const resp = await fetch("data.json")
     const data = await resp.json()
     listaDeProductos = data;
     renderizarProductos();
-} 
+}
 
 listaDeProductos()
 
+/* lista de productos*/ 
 function renderizarProductos() {
-    listaDeProductos.forEach((producto) => {
-        const div = document.createElement('div')
+    listaDeProductos.forEach((producto) =>{
+        let div = document.createElement('div')
         div.classList.add('producto')
         div.innerHTML = `
         <img src=${producto.img} alt= "">
         <h3>${producto.nombre}</h3>
         <p class="precioProducto">Precio:  $ ${producto.precio}</p>
         <p>Stock: ${producto.stock}</p>
-        <button id="agregar${producto.id}" class="boton-agregar">Agregar</button>`
+        <button id="agregar${producto.id}" class="btn btn-outline-info">Agregar</button>`
     
         contenedorProductos.appendChild(div)
     
-        const boton = document.getElementById(`agregar${producto.id}`) /*Averigua este simbolo ` */ 
-    
+        const boton = document.getElementById(`agregar${producto.id}`) /*Averigua este simbolo ` */
         boton.addEventListener('click', () => {
             agregarAlCarrito(producto.id)
         })
     });
-} 
+}
 
-
+//Boton Agregar
 const agregarAlCarrito = (prodId) => {
 
     const existe = carrito.some (prod => prod.id === prodId)
@@ -55,17 +57,32 @@ const agregarAlCarrito = (prodId) => {
         const prod = carrito.map (prod => {
             if (prod.id === prodId){
                 prod.cantidad++
+                localStorage.setItem('carrito', JSON.stringify(carrito))
             }
         })
     }else{
 
-    const item = stockProductos.find((prod) => 
+    const item = listaDeProductos.find((prod) => //problema!!!
         prod.id === prodId)
-    carrito.push(item)}
+        carrito.push(item)
+        localStorage.setItem('carrito', JSON.stringify(carrito))
+        alerta();
+}
 
     actualizarCarrito()
 }
 
+const alerta = () => {
+    Swal.fire({
+        position: 'center',
+        icon: 'success',
+        title: 'Agregado al Carrito!',
+        showConfirmButton: true,
+        timer: 1000,
+        confirmButtonText: "Seguir Comprando"
+    })
+}
+//Carrito
 const actualizarCarrito = () => {
 
     contenedorCarrito.innerHTML = ""
@@ -78,15 +95,18 @@ const actualizarCarrito = () => {
         <p>${prod.nombre}</p>
         <p>Precio:  $ ${prod.precio}</p>
         <p>Cantidad: <span id="cantidad">${prod.cantidad}</span></p>
-        <button onclick="eliminarDelCarrito(${prod.id})" class="boton-eliminar">-</button>
+        <button id="eliminarDelCarrito${prod.id}" class="btn btn-outline-warning">X</button>
         `
-        contenedorCarrito.appendChild(div)
-
-        localStorage.setItem('carrito', JSON.stringify(carrito))
+        contenedorCarrito.appendChild(div);
+        //Boton
+        const boton = document.getElementById(`eliminarDelCarrito${prod.id}`) /*Averigua este simbolo ` */
+        boton.addEventListener('click', () => {
+            eliminarDelCarrito(prod.id)
+        });
     })
     precioTotal.innerText = carrito.reduce ((acc, prod) => acc + prod.precio * prod.cantidad, 0)
 }
-
+//Boton Eliminar Item
 const eliminarDelCarrito = (prodId) => {
 
     const item = carrito.find((prod) => prod.id === prodId)
@@ -97,7 +117,28 @@ const eliminarDelCarrito = (prodId) => {
 
     actualizarCarrito() 
 }
+//Boton Realizar Compra
+const realizarPedido = ({
+    value: email
+}) => {
+    (async () => {
 
+        const {
+            value: email
+        } = await Swal.fire({
+            title: 'Te enviaremos el Link de pago',
+            input: 'email',
+            inputLabel: 'Ingresa tu email',
+            inputPlaceholder: 'Email'
+        })
+
+        if (email) {
+            Swal.fire(`Finaliza tu compra ingresando a: ${email}`)
+        }
+    })()
+}
+botonPedir.addEventListener("click", realizarPedido);
+//Boton Vaciar Carrito
 botonVaciar.addEventListener('click', () => {
     Swal.fire({
         title: 'Estas seguro de vaciar el carrito?',
@@ -115,8 +156,11 @@ botonVaciar.addEventListener('click', () => {
           )
             carrito.length = 0
             actualizarCarrito()
+            localStorage.removeItem('carrito');
+                localStorage.clear();
         }
       })
 })
 
      
+   
